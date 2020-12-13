@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貪食蛇</title>
+    <link rel="icon" href="img/1.jpg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .logo {
+            font-size: 50px;
+            font-weight: 700;
+            
+        }
+        .logo a{
+            text-decoration: none;
+            color: #000;
+        }
+        .outer {
+            width: 1500px;
+            height: 920px;
+            border: 1px solid black;
+            margin: 10px auto;
+            position: relative;
+        }
+
+        .main {
+            margin: 0 10px;
+            margin-top: 35px;
+        }
+
+        .btn {
+            width: 100px;
+            height: 50px;
+            font-size: 22px;
+        }
+
+        .console {
+            display: flex;
+            border-bottom: 1px solid black;
+            justify-content: space-between;
+        }
+
+        .score {
+            line-height: 111px;
+            font-size: 30px;
+            margin-right: 200px;
+        }
+
+        .score .score-num {
+            color: red;
+            font-weight: bold;
+        }
+
+        .gamemode-wrapper {
+            width: 140px;
+            height: 100px;
+            border-left: 1px solid black;
+            font-size: 26px;
+            padding: 5px
+        }
+
+        .gamemode {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .gamebody {
+            width: 1200px;
+            height: 800px;
+            background-color: black;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 5px;
+            margin: auto
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="logo"><a href="../index.html">NIW</a></h1>
+    <div class="outer">
+        <div class="console">
+            <div class="main">
+                <input class="btn" type="button" value="開始遊戲" id="start">
+                <input class="btn" type="button" value="暫停遊戲" id="stop">
+            </div>
+            <div class="score">
+                <span>分數:<span class="score-num">0</span></span>
+            </div>
+            <div class="gamemode-wrapper">
+                <p>遊戲模式:</p>
+                <div class="gamemode">
+                    <div><input class="levels" type="radio" name="level" value="easy" checked>簡單</div>
+                    <div><input class="levels" type="radio" name="level" value="normal">普通</div>
+                    <div> <input class="levels" type="radio" name="level" value="difficult">困難</div>
+                    <div> <input class="levels" type="radio" name="level" value="hell">地獄</div>
+                </div>
+            </div>
+        </div>
+        <div class="gamebody"></div>
+    </div>
+    <script>
+        let gamebody = document.querySelector(".gamebody")
+        let timer
+        let showCanvas = false
+        let lv = document.querySelectorAll(".levels")
+        let level = 200
+        let score = document.querySelector(".score-num")
+        let scoreNum = 0;
+        // 創建地圖對象
+        function Map(atom, xnum, ynum) {
+            this.atom = atom
+            this.xnum = xnum
+            this.ynum = ynum
+            this.canvas = null
+
+            this.create = function () {
+                this.canvas = document.createElement('div')
+                this.canvas.style.cssText = "position:relative;border:1px solid red;background:#FAFAFA"
+                this.canvas.style.width = this.atom * this.xnum + "px"
+                this.canvas.style.height = this.atom * this.ynum + "px"
+                gamebody.appendChild(this.canvas)
+
+                if (showCanvas) {
+                    for (let y = 0; y < this.ynum; y++) {
+                        for (let x = 0; x < this.xnum; x++) {
+                            let a = document.createElement("div")
+                            a.style.cssText = "border:1px solid yellow;position:absolute;box-sizing:border-box"
+                            a.style.backgroundColor = "green"
+                            a.style.width = this.atom + "px"
+                            a.style.height = this.atom + "px"
+                            a.style.top += y * this.atom + "px"
+                            a.style.left += x * this.atom + "px"
+                            this.canvas.appendChild(a)
+                        }
+                    }
+                }
+            }
+        }
+        let map = new Map(20, 60, 40)
+        map.create()
+        // 難度choose
+        for (let i = 0; i < lv.length; i++) {
+            lv[i].onclick = function () {
+                console.log(this.value)
+                switch (this.value) {
+                    case "easy":
+                        level = 200
+                        setMap(20, 60, 40)
+                        break;
+                    case "normal":
+                        level = 100
+                        setMap(20, 60, 40)
+                        break;
+                    case "difficult":
+                        level = 50
+                        setMap(20, 60, 40)
+                        break;
+                    case "hell":
+                        level = 10
+                        setMap(10, 120, 80)
+                        break;
+                }
+
+            }
+        }
+        //在改變難度時改變地圖用的函數
+        function setMap(atom, xnum, ynum) {
+            gamebody.removeChild(map.canvas)
+            map = new Map(atom, xnum, ynum)
+            map.create()
+            food = new Food(map)
+            snake = new Snake(map)
+            snake.display()
+        }
+        // 創建食物
+        function Food(map) {
+            this.width = map.atom
+            this.height = map.atom
+            this.bgColor = `rgb(${Math.round(Math.random() * 200)},${Math.round(Math.random() * 200)},${Math.round(Math.random() * 200)})`
+            this.x = Math.floor(Math.random() * map.xnum)
+            this.y = Math.floor(Math.random() * map.ynum)
+            let food = document.createElement("div")
+            this.flag = food
+            food.style.width = this.width + "px"
+            food.style.height = this.height + "px"
+            food.style.backgroundColor = this.bgColor
+            food.style.position = "absolute"
+            food.style.top = this.y * map.atom + "px"
+            food.style.left = this.x * map.atom + "px"
+            map.canvas.appendChild(food)
+        }
+        let food = new Food(map)
+        // 創建Snake
+        function Snake(map) {
+            this.width = map.atom
+            this.height = map.atom
+            this.direction = "right"
+            this.body = [
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+                { x: 0, y: 0 }
+            ]
+            this.display = function () {
+                for (let i = 0; i < this.body.length; i++) {
+                    if (this.body[i].x != null) {
+                        let s = document.createElement('div')
+                        this.body[i].flag = s
+                        if (i == 0) {
+                            s.style.background = "url('https://github.com/asd28760969/asd28760969.github.io/blob/master/img/1.jpg?raw=true') center"
+                            s.style.backgroundSize = "cover"
+
+                        }
+                        s.style.width = this.width + 'px'
+                        s.style.height = this.height + 'px'
+                        s.style.backgroundColor = `rgb(${Math.round(Math.random() * 200)},${Math.round(Math.random() * 200)},${Math.round(Math.random() * 200)})`
+                        s.style.position = "absolute"
+                        s.style.left = this.body[i].x * map.atom + 'px'
+                        s.style.top = this.body[i].y * map.atom + 'px'
+                        map.canvas.appendChild(s)
+                    }
+                }
+            }
+            this.run = function () {
+                for (let i = this.body.length - 1; i > 0; i--) {
+                    this.body[i].x = this.body[i - 1].x
+                    this.body[i].y = this.body[i - 1].y
+
+                }
+                switch (this.direction) {
+                    case "right":
+
+                        this.body[0].x++
+
+                        break
+                    case "left":
+
+                        this.body[0].x--
+
+                        break
+                    case "up":
+
+                        this.body[0].y--
+
+                        break
+                    case "down":
+
+                        this.body[0].y++
+
+                        break
+                }
+                // 判斷是否撞到邊界
+                if (this.body[0].x < 0 || this.body[0].y < 0 || this.body[0].x > map.xnum - 1 || this.body[0].y > map.ynum - 1) {
+                    clearInterval(timer)
+                    alert("可憐啊")
+                    reset()
+                    return false
+                }
+                // 判斷是否撞到自己
+                for (let i = 4; i < this.body.length; i++) {
+                    if (this.body[0].x == this.body[i].x && this.body[0].y == this.body[i].y) {
+                        clearInterval(timer)
+                        alert("可憐啊")
+                        reset()
+                        return false
+                    }
+                }
+                // 判斷食物是否被進食
+                if (this.body[0].x == food.x && this.body[0].y == food.y) {
+                    scoreNum += 100
+                    this.body.push({ x: null, y: null, flag: null })
+                    map.canvas.removeChild(food.flag)
+                    food = new Food(map)
+                }
+                for (let i = 0; i < this.body.length; i++) {
+                    if (this.body[i].flag != null) {
+                        map.canvas.removeChild(this.body[i].flag)
+                    }
+                }
+                this.display()
+            }
+        }
+        let snake = new Snake(map)
+        snake.display()
+        // 重置一切的函數
+        function reset() {
+            for (let i = 0; i < snake.body.length; i++) {
+                if (snake.body[i].flag != null) {
+                    map.canvas.removeChild(snake.body[i].flag)
+                }
+            }
+            snake.body = [
+                { x: 2, y: 0 },
+                { x: 1, y: 0 },
+                { x: 0, y: 0 }
+            ]
+            snake.direction = "right"
+            snake.display()
+            map.canvas.removeChild(food.flag)
+            food = new Food(map)
+            scoreNum = 0
+        }
+        // 控制蛇的方向
+        window.onkeydown = function (e) {
+            let event = e || window.event
+            // 上下左右:87 83 65 68
+            switch (e.keyCode) {
+                case 87:
+                    if (snake.direction != "down") {
+                        snake.direction = "up"
+                    }
+                    break
+                case 83:
+                    if (snake.direction != "up") {
+                        snake.direction = "down"
+                    }
+                    break
+                case 65:
+                    if (snake.direction != "right") {
+                        snake.direction = "left"
+                    }
+                    break
+                case 68:
+                    if (snake.direction != "left") {
+                        snake.direction = "right"
+                    }
+                    break
+            }
+        }
+        document.getElementById("start").onclick = function () {
+            clearInterval(timer)
+            timer = setInterval(function () {
+                snake.run()
+                score.innerHTML = scoreNum
+            }, level)
+        }
+        document.getElementById("stop").onclick = function () {
+            clearInterval(timer)
+        }
+    </script>
+</body>
+
+</html>
