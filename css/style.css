@@ -37,6 +37,13 @@ header nav a {
 header nav i {
   color: #BBB;
 }
+header .burger {
+  display: none;
+  cursor: pointer;
+}
+header .burger .line1, header .burger .line2, header .burger .line3 {
+  transition: 0.4s;
+}
 
 .topside-bg {
   position: relative;
@@ -176,22 +183,27 @@ header nav i {
 }
 .content .show-project .project .name {
   margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 70px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
 }
 .content .show-project .project .name h2 {
   font-size: 40px;
   color: #000;
+  margin-left: 15px;
 }
 .content .show-project .project .name a {
+  display: block;
+  text-align: center;
+  width: 7vw;
+  line-height: 2vw;
   font-size: 24px;
   background-color: #de4307;
   text-decoration: none;
   font-weight: 600;
-  padding: 10px 7px;
+  padding: 10px 0;
   color: #FFF;
   border-radius: 4px;
+  margin-right: 15px;
 }
 
 footer {
@@ -228,6 +240,129 @@ footer .contact .email {
 }
 footer .contact .github {
   margin-left: 50px;
+}
+
+@media (max-width: 1024px) {
+  .topside-bg .title {
+    padding-left: 100px;
+    padding-right: 100px;
+    font-size: 36px;
+  }
+
+  .content .show-project .project .name {
+    padding: 0 50px;
+  }
+  .content .show-project .project .name h2 {
+    font-size: 20px;
+    margin-left: 0;
+  }
+  .content .show-project .project .name a {
+    font-size: 16px;
+    line-height: 10px;
+  }
+
+  footer h2 {
+    font-size: 38px;
+    padding: 0 15px;
+  }
+}
+@media (max-width: 768px) {
+  header {
+    position: relative;
+  }
+  header nav {
+    display: none;
+  }
+  header .burger {
+    display: block;
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    right: 50px;
+  }
+  header .burger div {
+    width: 100%;
+    height: 5px;
+    background-color: #BBB;
+  }
+  header .burger .line2 {
+    margin: 6px 0;
+  }
+  header .burger.open .line1 {
+    transform: rotateZ(30deg) translateY(13px);
+  }
+  header .burger.open .line2 {
+    opacity: 0;
+  }
+  header .burger.open .line3 {
+    transform: rotateZ(-30deg) translateY(-13px);
+  }
+
+  .openMenu {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    z-index: 200;
+    align-items: stretch;
+    background-color: #000;
+  }
+  .openMenu .logo {
+    display: none;
+  }
+  .openMenu nav {
+    display: flex;
+    flex-direction: column;
+    justify-self: start;
+    margin-top: 10px;
+  }
+  .openMenu nav a {
+    color: #fbfbfb;
+  }
+  .openMenu nav a:hover {
+    background-color: #ee9e0b;
+  }
+  .openMenu nav i {
+    display: none;
+  }
+  .openMenu .burger {
+    margin-top: 20px;
+    color: #fbfbfb;
+  }
+
+  .content .show-project .projects {
+    grid-template-columns: 1fr;
+    row-gap: 50px;
+  }
+  .content .show-project .projects .project {
+    width: 80vw;
+    height: 50vw;
+  }
+  .content .show-project .projects .project img {
+    height: 35vw;
+  }
+  .content .show-project .projects .project .name {
+    margin-top: 5vw;
+  }
+  .content .show-project .projects .project .name h2 {
+    font-size: 34px;
+    margin-left: 0;
+  }
+  .content .show-project .projects .project .name a {
+    font-size: 24px;
+    width: 120px;
+    padding-top: 17px;
+  }
+
+  footer .contact {
+    flex-direction: column;
+    align-items: center;
+  }
+  footer .contact .email {
+    margin: 0;
+  }
+  footer .contact .github {
+    margin: 0;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
