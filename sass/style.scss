@@ -55,7 +55,7 @@ header{
     .bg-image{
         width: 100vw;
         height: 100%;
-        background:url("../img/2.jpg");
+        background:url("https://github.com/ngiokweng/ngiokweng.github.io/blob/master/img/2.jpg?raw=true");
         background-size: cover;
         background-attachment: fixed;
         position: absolute;
@@ -371,6 +371,9 @@ footer{
         }
     }
     footer{
+        h2{
+            font-size: 24px;
+        }
         .contact{
             .email{
                 margin: 0;
@@ -385,5 +388,38 @@ footer{
 
 }
 @media(max-width:480px){
-
+    .topside-bg{
+        .title{
+            padding:200px 50px 0 50px
+        }
+    }
+    .content{
+        .show-project{
+            width: unset;
+           .projects{
+            .project{ 
+                .name{
+                    h2{
+                        font-size: 24px;
+                        margin-left: 0;          
+                    }
+                    a{
+                        font-size: 20px;
+                        width: 100px;
+                        padding-top: 13px;
+                        margin: 0;
+                    }
+                }
+            }
+           }
+        }
+    }
+    footer{
+        h2{
+            font-size: 24px;
+        }
+        .github{
+            font-size: 14px;
+        }
+    }
 }

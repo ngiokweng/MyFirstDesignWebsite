@@ -53,7 +53,7 @@ header .burger .line1, header .burger .line2, header .burger .line3 {
 .topside-bg .bg-image {
   width: 100vw;
   height: 100%;
-  background: url("../img/2.jpg");
+  background: url("https://github.com/ngiokweng/ngiokweng.github.io/blob/master/img/2.jpg?raw=true");
   background-size: cover;
   background-attachment: fixed;
   position: absolute;
@@ -353,6 +353,9 @@ footer .contact .github {
     padding-top: 17px;
   }
 
+  footer h2 {
+    font-size: 24px;
+  }
   footer .contact {
     flex-direction: column;
     align-items: center;
@@ -362,6 +365,32 @@ footer .contact .github {
   }
   footer .contact .github {
     margin: 0;
+  }
+}
+@media (max-width: 480px) {
+  .topside-bg .title {
+    padding: 200px 50px 0 50px;
+  }
+
+  .content .show-project {
+    width: unset;
+  }
+  .content .show-project .projects .project .name h2 {
+    font-size: 24px;
+    margin-left: 0;
+  }
+  .content .show-project .projects .project .name a {
+    font-size: 20px;
+    width: 100px;
+    padding-top: 13px;
+    margin: 0;
+  }
+
+  footer h2 {
+    font-size: 24px;
+  }
+  footer .github {
+    font-size: 14px;
   }
 }
 
